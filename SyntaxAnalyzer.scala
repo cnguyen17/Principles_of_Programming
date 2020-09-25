@@ -35,13 +35,13 @@ class SyntaxAnalyzer(private var source: String) {
       getLexemeUnit()
       tree.add(parseIdentifier())
       tree.add(parseBody)
-//      if (lexemeUnit.getToken() == Token.PERIOD) {
-//        tree.add(new Tree(lexemeUnit.getLexeme()))
-//        lexemeUnit = null
-//        getLexemeUnit()
-//      }
-//      else
-//        throw new Exception("Syntax Analyzer Error: period expected!")
+      //      if (lexemeUnit.getToken() == Token.PERIOD) {
+      //        tree.add(new Tree(lexemeUnit.getLexeme()))
+      //        lexemeUnit = null
+      //        getLexemeUnit()
+      //      }
+      //      else
+      //        throw new Exception("Syntax Analyzer Error: period expected!")
     }
     else
       throw new Exception("Syntax Analyzer Error: program expected!")
@@ -52,15 +52,15 @@ class SyntaxAnalyzer(private var source: String) {
   // identifier = letter { ( letter | digit ) }
   // TODO: return a new tree with the label "identifier" followed by the actual lexeme
   private def parseIdentifier() = new Tree("identifier: '" + lexemeUnit.getLexeme() + "'")
-//  lexemeUnit = null
-//  getLexemeUnit()
+  //  lexemeUnit = null
+  //  getLexemeUnit()
 
 
   // body = [ var_sct ] block
   private def parseBody() = {
     // create a tree with label "program"
     val tree = new Tree("body")
-   if (lexemeUnit.getToken() != Token.EOF) {
+    if (lexemeUnit.getToken() != Token.EOF) {
       tree.add(parse_varSct())
       tree.add(parseBlock())
     } else
@@ -95,9 +95,7 @@ class SyntaxAnalyzer(private var source: String) {
         done = true
     }
     tree
-    }
-
-
+  }
 
   // var_dcl = identifier { identifier } ´:´ type
   private def parse_valDlc(): Tree = {
@@ -153,443 +151,433 @@ class SyntaxAnalyzer(private var source: String) {
   }
 
 
-      // block = ´begin´ stmt { ´;´ stmt } ´end´
-      private def parseBlock(): Tree = {
-        //    println("parseDefinitionList")
-        val tree = new Tree("block")
-        getLexemeUnit()
+  // block = ´begin´ stmt { ´;´ stmt } ´end´
+  private def parseBlock(): Tree = {
+    //    println("parseDefinitionList")
+    val tree = new Tree("block")
+    getLexemeUnit()
 
-        if (lexemeUnit.getToken() == Token.BEGIN) {
-          tree.add(new Tree(lexemeUnit.getLexeme()))
-          lexemeUnit = null
-          getLexemeUnit()
-        }
+    if (lexemeUnit.getToken() == Token.BEGIN) {
+      tree.add(new Tree(lexemeUnit.getLexeme()))
+      lexemeUnit = null
+      getLexemeUnit()
+    }
 
-        var done = false
-        while (!done) {
-          tree.add(parseStmt())
-          if (lexemeUnit.getToken() == Token.SEMI_COL) {
-            tree.add(new Tree(lexemeUnit.getLexeme()))
-            lexemeUnit = null
-            getLexemeUnit()
-          }
-          else
-            done = true
-        }
-        if (lexemeUnit.getToken() == Token.END) {
-          tree.add(new Tree(lexemeUnit.getLexeme()))
-          lexemeUnit = null
-          getLexemeUnit()
-        }
-        tree
-      }
-      // stmt = assgm_stmt | read_stmt | write_stmt | if_stmt | while_stmt | block
-      private def parseStmt(): Tree = {
-        //    println("parseTerm")
-        val tree = new Tree("stmt")
-        getLexemeUnit()
-        //    println(lexemeUnit)
-        if (lexemeUnit.getToken() == Token.IDENTIFIER)
-          tree.add(parse_assgmStmt())
-        else if (lexemeUnit.getToken() == Token.READ)
-          tree.add(parseread_Stmt())
-        else if (lexemeUnit.getToken() == Token.WRITE)
-          tree.add(parsewrite_Stmt())
-        else if (lexemeUnit.getToken() == Token.WHILE)
-          tree.add(parseWhile_Stmt())
-        else if (lexemeUnit.getToken() == Token.BEGIN)
-          tree.add(parseBlock())
+    var done = false
+    while (!done) {
+      tree.add(parseStmt())
+      if (lexemeUnit.getToken() == Token.SEMI_COL) {
+        tree.add(new Tree(lexemeUnit.getLexeme()))
         lexemeUnit = null
         getLexemeUnit()
-
-        tree
       }
-
-      // assgm_stmt = identifier ´:=´ expr
-      private def parse_assgmStmt(): Tree = {
-        val tree = new Tree("assgm_stmt")
-        getLexemeUnit()
-        if (lexemeUnit.getToken() == Token.IDENTIFIER) {
-
-          tree.add(parseIdentifier())
-          lexemeUnit = null
-          getLexemeUnit()
-          if (lexemeUnit.getToken() == Token.ASSIGN_STMT) { //Be more specific?
-            tree.add(new Tree(lexemeUnit.getLexeme()))
-            lexemeUnit = null
-            getLexemeUnit()
-            tree.add(parseExpr())
-          }
-          else
-            throw new Exception("Syntax Analyzer Error: defining symbol expected!")
-        }
-        else
-          throw new Exception("Syntax Analyzer Error: meta identifier expected!")
-        tree
-      }
-  //        else if (lexemeUnit.getToken() != Token.PIPE &&
-  //          lexemeUnit.getToken() != Token.NEW_LINE &&
-  //          lexemeUnit.getToken() != Token.CLOSE_PAR &&
-  //            lexemeUnit.getToken() != Token.CLOSE_BRACE &&
-  //            lexemeUnit.getToken() != Token.CLOSE_BRACKET
-  //        )
-  //          throw new Exception("Syntax Analyzer Error: valid term expected!")
-
-      // read_stmt = ´read´ identifier
-      private def parseread_Stmt() = {
-        // create a tree with label "program"
-        val tree = new Tree("read_stmt")
-        getLexemeUnit()
-        if (lexemeUnit.getToken() == Token.READ) {
-          tree.add(new Tree(lexemeUnit.getLexeme()))
-          lexemeUnit = null
-          getLexemeUnit()
-          tree.add(parseIdentifier())
-        }
-        else
-          throw new Exception("Syntax Analyzer Error: program expected!")
-        // return the tree
-        tree
-      }
-
-      // write_stmt = ´write´ ( identifier | literal )
-      private def parsewrite_Stmt(): Tree = {
-        // TODO: create a tree with label "expr"
-        val tree = new Tree("write_stmt")
-
-        // TODO: call getLexemeUnit
-        getLexemeUnit()
-
-
-        if (lexemeUnit.getToken() == Token.WRITE) {
-          tree.add(new Tree(lexemeUnit.getLexeme()))
-          lexemeUnit = null
-          getLexemeUnit()
-          tree.add(parseIdentifier())
-
-          // TODO: if token is NOT EOF
-          if (lexemeUnit.getToken() != Token.EOF) {
-            // TODO: if token is an identifier, add result of "parseIdentifier" as new branch and reset lexemeUnit
-            if (lexemeUnit.getToken() == Token.IDENTIFIER) {
-              tree.add(parse_arithm_Expr())
-              lexemeUnit = null // always set lexemeUnit to null after consuming it
-            }
-            // TODO: if token is a bool_expre, add result of "parseLiteral" as new branch and reset lexemeUnit
-            else if (lexemeUnit.getToken() == Token.TRUE ||lexemeUnit.getToken() == Token.FALSE
-              ||lexemeUnit.getToken() == Token.INT_LITERAL) {
-              tree.add(parseLiteral())
-              lexemeUnit = null // always set lexemeUnit to null after consuming it
-            }
-            // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-            else
-              throw new Exception("Syntax Analyzer Error: identifier, literal or \"opening parenthesis\" expected!")
-          }
-          // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-          else
-            throw new Exception("Syntax Analyzer Error: identifier, literal or \"opening parenthesis\" expected!")
-        }
-        // TODO: return the tree
-          tree
-        }
-      // if_stmt = ´if´ bool_expr ´then´ stmt [ ´else´ stmt ]
-      private def parse_if_Stmt(): Tree = {
-        //    println("parseOptionalSequence")
-        val tree = new Tree("if_stmnt")
-        getLexemeUnit()
-        if (lexemeUnit.getToken() == Token.IF) {
-          tree.add(new Tree(lexemeUnit.getLexeme()))
-          lexemeUnit = null
-          getLexemeUnit()
-          tree.add(parseBool_Expr())
-          if (lexemeUnit.getToken() == Token.THEN) {
-            tree.add(new Tree(lexemeUnit.getLexeme()))
-            lexemeUnit = null
-            getLexemeUnit()
-            tree.add(parseStmt())
-            tree.add(parse_valDlc())
-            if (lexemeUnit.getToken() == Token.ELSE) {
-              tree.add(new Tree(lexemeUnit.getLexeme()))
-              lexemeUnit = null
-              getLexemeUnit()
-            }
-            else
-              throw new Exception("Syntax Analyzer Error: \"else\" expected!")
-          }
-
-          else
-            throw new Exception("Syntax Analyzer Error: \"then\" expected!")
-        }
-        else
-          throw new Exception("Syntax Analyzer Error: \"if\" expected!")
-        tree
-      }
-
-      // while_stmt = ´while´ bool_expr ´do´ stmt
-      private def parseWhile_Stmt(): Tree = {
-        //    println("parseOptionalSequence")
-        val tree = new Tree("while_stmnt")
-        getLexemeUnit()
-        if (lexemeUnit.getToken() == Token.WHILE) {
-          tree.add(new Tree(lexemeUnit.getLexeme()))
-          lexemeUnit = null
-          getLexemeUnit()
-          tree.add(parseBool_Expr())
-          if (lexemeUnit.getToken() == Token.DO) {
-            tree.add(new Tree(lexemeUnit.getLexeme()))
-            lexemeUnit = null
-            getLexemeUnit()
-          }
-
-          else
-            throw new Exception("Syntax Analyzer Error: \"then\" expected!")
-        }
-        else
-          throw new Exception("Syntax Analyzer Error: \"if\" expected!")
-        tree
-      }
-
-
-
-      // expr = arithm_expr | bool_expr
-      private def parseExpr(): Tree = {
-        // TODO: create a tree with label "expr"
-        val tree = new Tree("expr")
-
-        // TODO: call getLexemeUnit
-        getLexemeUnit()
-
-        // TODO: if token is NOT EOF
-        if (lexemeUnit.getToken() != Token.EOF) {
-          // TODO: if token is an identifier, add result of "parseIdentifier" as new branch and reset lexemeUnit
-          if (lexemeUnit.getToken() == Token.IDENTIFIER) {
-            tree.add(parse_arithm_Expr())
-            lexemeUnit = null // always set lexemeUnit to null after consuming it
-          }
-          // TODO: if token is a bool_expre, add result of "parseLiteral" as new branch and reset lexemeUnit
-          else if (lexemeUnit.getToken() == Token.TRUE ||lexemeUnit.getToken() == Token.FALSE) {
-            tree.add(parseBool_Expr())
-            lexemeUnit = null // always set lexemeUnit to null after consuming it
-          }
-          // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-          else
-            throw new Exception("Syntax Analyzer Error: identifier, literal or \"opening parenthesis\" expected!")
-        }
-        // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-        else
-          throw new Exception("Syntax Analyzer Error: identifier, literal or \"opening parenthesis\" expected!")
-
-        // TODO: return the tree
-        tree
-      }
-
-      // arithm_expr = term arithm_expr'
-      private def parse_arithm_Expr() = {
-        // TODO: create a tree with label "term"
-        val tree = new Tree("arithm_expr")
-
-        // TODO: call getLexemeUnit
-        getLexemeUnit()
-
-        // TODO: if token is NOT EOF, add result of "parseFactor" and "parseTermPrime" as new branches
-        if (lexemeUnit.getToken() != Token.EOF) {
-          tree.add(parseTerm())
-          tree.add(parse_arithm_expr_Prime())
-          lexemeUnit = null
-        }
-        // TODO: otherwise, throw an exception saying that "factor" was expected
-        else
-          throw new Exception("Syntax Analyzer Error: factor expected!")
-
-        // TODO: return the tree
-        tree
-      }
-
-      //arith_expr'= ( ´+´ | ´-´ ) term arithm_expr'| epsilon
-      private def parse_arithm_expr_Prime(): Tree = {
-        // TODO: create a tree with label "term'"
-        val tree = new Tree("arith_expr'")
-
-        // TODO: call getLexemeUnit
-        getLexemeUnit()
-
-        // TODO: if token is NOT EOF
-        if (lexemeUnit.getToken() != Token.EOF) {
-
-          // TODO: if token is "*" or "/", add token as new branch and reset lexemeUnit;
-          //  then add result of "parseFactor" and "parseTermPrime" as new branches
-          if (lexemeUnit.getToken() == Token.ADD_OP || lexemeUnit.getToken() == Token.SUB_OP) {
-            tree.add(new Tree(lexemeUnit.getLexeme()))
-            lexemeUnit = null // always set lexemeUnit to null after consuming it
-            tree.add(parseTerm())
-            tree.add(parse_arithm_expr_Prime())
-
-
-          }
-          // else means "epsilon" production
-
-        }
-
-        // TODO: return the tree
-        tree
-      }
-
-      // term = factor term'
-
-      private def parseTerm() = {
-        // TODO: create a tree with label "term"
-        val tree = new Tree("term")
-
-        // TODO: call getLexemeUnit
-        getLexemeUnit()
-
-        // TODO: if token is NOT EOF, add result of "parseFactor" and "parseTermPrime" as new branches
-        if (lexemeUnit.getToken() != Token.EOF) {
-          tree.add(parseFactor())
-          tree.add(parseTermPrime())
-        }
-        // TODO: otherwise, throw an exception saying that "factor" was expected
-        else
-          throw new Exception("Syntax Analyzer Error: factor expected!")
-
-        // TODO: return the tree
-        tree
-      }
-
-    // term' = '*'  factor term' | epsilon
-    private def parseTermPrime(): Tree = {
-      // TODO: create a tree with label "term'"
-      val tree = new Tree("term'")
-
-      // TODO: call getLexemeUnit
+      else
+        done = true
+    }
+    if (lexemeUnit.getToken() == Token.END) {
+      tree.add(new Tree(lexemeUnit.getLexeme()))
+      lexemeUnit = null
       getLexemeUnit()
+    }
+    tree
+  }
+  // stmt = assgm_stmt | read_stmt | write_stmt | if_stmt | while_stmt | block
+  private def parseStmt(): Tree = {
+    //    println("parseTerm")
+    val tree = new Tree("stmt")
+    getLexemeUnit()
+    //    println(lexemeUnit)
+    if (lexemeUnit.getToken() == Token.IDENTIFIER)
+      tree.add(parse_assgmStmt())
+    else if (lexemeUnit.getToken() == Token.READ)
+      tree.add(parseread_Stmt())
+    else if (lexemeUnit.getToken() == Token.WRITE)
+      tree.add(parsewrite_Stmt())
+    else if (lexemeUnit.getToken() == Token.WHILE)
+      tree.add(parseWhile_Stmt())
+    else if (lexemeUnit.getToken() == Token.BEGIN)
+      tree.add(parseBlock())
+    lexemeUnit = null
+    getLexemeUnit()
 
+    //        else if (lexemeUnit.getToken() != Token.PIPE &&
+    //          lexemeUnit.getToken() != Token.NEW_LINE &&
+    //          lexemeUnit.getToken() != Token.CLOSE_PAR &&
+    //            lexemeUnit.getToken() != Token.CLOSE_BRACE &&
+    //            lexemeUnit.getToken() != Token.CLOSE_BRACKET
+    //        )
+    //          throw new Exception("Syntax Analyzer Error: valid term expected!")
+    tree
+  }
+
+  // assgm_stmt = identifier ´:=´ expr
+  private def parse_assgmStmt(): Tree = {
+    val tree = new Tree("assgm_stmt")
+    getLexemeUnit()
+    if (lexemeUnit.getToken() == Token.IDENTIFIER) {
+
+      tree.add(parseIdentifier())
+      lexemeUnit = null
+      getLexemeUnit()
+      if (lexemeUnit.getToken() == Token.ASSIGN_STMT) { //Be more specific?
+        tree.add(new Tree(lexemeUnit.getLexeme()))
+        lexemeUnit = null
+        getLexemeUnit()
+        tree.add(parseExpr())
+      }
+      else
+        throw new Exception("Syntax Analyzer Error: defining symbol expected!")
+    }
+    else
+      throw new Exception("Syntax Analyzer Error: meta identifier expected!")
+    tree
+  }
+
+  // read_stmt = ´read´ identifier
+  private def parseread_Stmt() = {
+    // create a tree with label "program"
+    val tree = new Tree("read_stmt")
+    getLexemeUnit()
+    if (lexemeUnit.getToken() == Token.READ) {
+      tree.add(new Tree(lexemeUnit.getLexeme()))
+      lexemeUnit = null
+      getLexemeUnit()
+      tree.add(parseIdentifier())
+    }
+    else
+      throw new Exception("Syntax Analyzer Error: program expected!")
+    // return the tree
+    tree
+  }
+
+  // write_stmt = ´write´ ( identifier | literal )
+  private def parsewrite_Stmt(): Tree = {
+    // TODO: create a tree with label "expr"
+    val tree = new Tree("write_stmt")
+
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
+
+    if (lexemeUnit.getToken() == Token.WRITE) {
+      tree.add(new Tree(lexemeUnit.getLexeme()))
+      lexemeUnit = null
+      getLexemeUnit()
+      if (lexemeUnit.getToken() == Token.TRUE || lexemeUnit.getToken() == Token.FALSE){
+        tree.add(parseIdentifier())
+      }
+
+    }
+      else {
+        throw new Exception("Syntax Analyzer Error: identifier, literal or \"opening parenthesis\" expected!")
+    }
+
+    // TODO: return the tree
+    tree
+  }
+  // if_stmt = ´if´ bool_expr ´then´ stmt [ ´else´ stmt ]
+  private def parse_if_Stmt(): Tree = {
+    //    println("parseOptionalSequence")
+    val tree = new Tree("if_stmnt")
+    getLexemeUnit()
+    if (lexemeUnit.getToken() == Token.IF) {
+      tree.add(new Tree(lexemeUnit.getLexeme()))
+      lexemeUnit = null
+      getLexemeUnit()
+      tree.add(parseBool_Expr())
+      if (lexemeUnit.getToken() == Token.THEN) {
+        tree.add(new Tree(lexemeUnit.getLexeme()))
+        lexemeUnit = null
+        getLexemeUnit()
+        tree.add(parseStmt())
+        tree.add(parse_valDlc())
+        if (lexemeUnit.getToken() == Token.ELSE) {
+          tree.add(new Tree(lexemeUnit.getLexeme()))
+          lexemeUnit = null
+          getLexemeUnit()
+        }
+        else
+          throw new Exception("Syntax Analyzer Error: \"else\" expected!")
+      }
+
+      else
+        throw new Exception("Syntax Analyzer Error: \"then\" expected!")
+    }
+    else
+      throw new Exception("Syntax Analyzer Error: \"if\" expected!")
+    tree
+  }
+
+  // while_stmt = ´while´ bool_expr ´do´ stmt
+  private def parseWhile_Stmt(): Tree = {
+    //    println("parseOptionalSequence")
+    val tree = new Tree("while_stmnt")
+    getLexemeUnit()
+    if (lexemeUnit.getToken() == Token.WHILE) {
+      tree.add(new Tree(lexemeUnit.getLexeme()))
+      lexemeUnit = null
+      getLexemeUnit()
+      tree.add(parseBool_Expr())
+      if (lexemeUnit.getToken() == Token.DO) {
+        tree.add(new Tree(lexemeUnit.getLexeme()))
+        lexemeUnit = null
+        getLexemeUnit()
+      }
+
+      else
+        throw new Exception("Syntax Analyzer Error: \"then\" expected!")
+    }
+    else
+      throw new Exception("Syntax Analyzer Error: \"if\" expected!")
+    tree
+  }
+
+
+
+  // expr = arithm_expr | bool_expr
+  private def parseExpr(): Tree = {
+    // TODO: create a tree with label "expr"
+    val tree = new Tree("expr")
+
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
+
+    // TODO: if token is NOT EOF
+    if (lexemeUnit.getToken() != Token.EOF) {
+      // TODO: if token is an identifier, add result of "parseIdentifier" as new branch and reset lexemeUnit
+      if (lexemeUnit.getToken() == Token.IDENTIFIER) {
+        tree.add(parse_arithm_Expr())
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
+      }
+      // TODO: if token is a bool_expre, add result of "parseLiteral" as new branch and reset lexemeUnit
+      else if (lexemeUnit.getToken() == Token.TRUE ||lexemeUnit.getToken() == Token.FALSE) {
+        tree.add(parseBool_Expr())
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
+      }
+      // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
+      else
+        throw new Exception("Syntax Analyzer Error: identifier, literal or \"opening parenthesis\" expected!")
+    }
+    // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
+    else
+      throw new Exception("Syntax Analyzer Error: identifier, literal or \"opening parenthesis\" expected!")
+
+    // TODO: return the tree
+    tree
+  }
+
+  // arithm_expr = term arithm_expr'
+  private def parse_arithm_Expr() = {
+    // TODO: create a tree with label "term"
+    val tree = new Tree("arithm_expr")
+
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
+
+    // TODO: if token is NOT EOF, add result of "parseFactor" and "parseTermPrime" as new branches
+    if (lexemeUnit.getToken() != Token.EOF) {
+      tree.add(parseTerm())
+      tree.add(parse_arithm_expr_Prime())
+      lexemeUnit = null
+    }
+    // TODO: otherwise, throw an exception saying that "factor" was expected
+    else
+      throw new Exception("Syntax Analyzer Error: factor expected!")
+
+    // TODO: return the tree
+    tree
+  }
+
+  //arith_expr'= ( ´+´ | ´-´ ) term arithm_expr'| epsilon
+  private def parse_arithm_expr_Prime(): Tree = {
+    // TODO: create a tree with label "term'"
+    val tree = new Tree("arith_expr'")
+    // TODO: call getLexemeUnit
+//    lexemeUnit = null
+//    getLexemeUnit()
+    var done = false
+    while (!done){
+      getLexemeUnit()
       // TODO: if token is NOT EOF
       if (lexemeUnit.getToken() != Token.EOF) {
 
-        // TODO: if token is "*" or "/", add token as new branch and reset lexemeUnit;
-        //  then add result of "parseFactor" and "parseTermPrime" as new branches
-        if (lexemeUnit.getToken() == Token.MUL_OP) {
-          tree.add(new Tree(lexemeUnit.getLexeme()))
-          lexemeUnit = null // always set lexemeUnit to null after consuming it
-          tree.add(parseFactor())
-          tree.add(parseTermPrime())
+      // TODO: if token is "*" or "/", add token as new branch and reset lexemeUnit;
+      //  then add result of "parseFactor" and "parseTermPrime" as new branches
+      if (lexemeUnit.getToken() == Token.ADD_OP || lexemeUnit.getToken() == Token.SUB_OP) {
+        tree.add(new Tree(lexemeUnit.getLexeme()))
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
+        tree.add(parseTerm())
+        tree.add(parse_arithm_expr_Prime())
 
-        }
-        // else means "epsilon" production
+      }
+      // else means "epsilon" production
+      else {
+        done = true
       }
 
-      // TODO: return the tree
-      tree
+      }
+
+    }
+    // TODO: return the tree
+    tree
+  }
+
+  // term = factor term'
+
+  private def parseTerm() = {
+    // TODO: create a tree with label "term"
+    val tree = new Tree("term")
+
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
+
+    // TODO: if token is NOT EOF, add result of "parseFactor" and "parseTermPrime" as new branches
+    if (lexemeUnit.getToken() != Token.EOF) {
+      tree.add(parseFactor())
+      tree.add(parseTermPrime())
+    }
+    // TODO: otherwise, throw an exception saying that "factor" was expected
+    else
+      throw new Exception("Syntax Analyzer Error: factor expected!")
+
+    // TODO: return the tree
+    tree
+  }
+
+  // term' = '*'  factor term' | epsilon
+  private def parseTermPrime(): Tree = {
+    // TODO: create a tree with label "term'"
+    val tree = new Tree("term'")
+
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
+
+    // TODO: if token is NOT EOF
+    if (lexemeUnit.getToken() != Token.EOF) {
+
+      // TODO: if token is "*" or "/", add token as new branch and reset lexemeUnit;
+      //  then add result of "parseFactor" and "parseTermPrime" as new branches
+      if (lexemeUnit.getToken() == Token.MUL_OP) {
+        tree.add(new Tree(lexemeUnit.getLexeme()))
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
+        tree.add(parseFactor())
+        tree.add(parseTermPrime())
+
+      }
+      // else means "epsilon" production
     }
 
+    // TODO: return the tree
+    tree
+  }
 
-      // factor = identifier | int_literal
-      private def parseFactor(): Tree = {
-        // TODO: create a tree with label "factor"
-        val tree = new Tree("factor")
 
-        // TODO: call getLexemeUnit
-        getLexemeUnit()
+  // factor = identifier | int_literal
+  private def parseFactor(): Tree = {
+    // TODO: create a tree with label "factor"
+    val tree = new Tree("factor")
 
-        // TODO: if token is NOT EOF
-        if (lexemeUnit.getToken() != Token.EOF) {
-          // TODO: if token is an identifier, add result of "parseIdentifier" as new branch and reset lexemeUnit
-          if (lexemeUnit.getToken() == Token.IDENTIFIER) {
-            tree.add(parseIdentifier())
-            lexemeUnit = null // always set lexemeUnit to null after consuming it
-          }
-          // TODO: if token is a Int_literal, add result of "parseLiteral" as new branch and reset lexemeUnit
-          else if (lexemeUnit.getToken() == Token.INT_LITERAL) {
-            tree.add(parse_intLiteral())
-            lexemeUnit = null // always set lexemeUnit to null after consuming it
-          }
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
 
-          // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-          else
-            throw new Exception("Syntax Analyzer Error: identifier or \"(int) literal\" expected!")
-        }
-        // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-        else
-          throw new Exception("Syntax Analyzer Error: identifier or \"(int) literal\" expected!")
-
-        // TODO: return the tree
-        tree
+    // TODO: if token is NOT EOF
+    if (lexemeUnit.getToken() != Token.EOF) {
+      // TODO: if token is an identifier, add result of "parseIdentifier" as new branch and reset lexemeUnit
+      if (lexemeUnit.getToken() == Token.IDENTIFIER) {
+        tree.add(parseIdentifier())
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
+      }
+      // TODO: if token is a Int_literal, add result of "parseLiteral" as new branch and reset lexemeUnit
+      else if (lexemeUnit.getToken() == Token.INT_LITERAL) {
+        tree.add(parse_intLiteral())
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
       }
 
+      // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
+      else
+        throw new Exception("Syntax Analyzer Error: identifier or \"(int) literal\" expected!")
+    }
+    // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
+    else
+      throw new Exception("Syntax Analyzer Error: identifier or \"(int) literal\" expected!")
 
-        // literal = int_literal | bool_literal
-        private def parseLiteral(): Tree = {
-          // TODO: create a tree with label "literal"
-          val tree = new Tree("literal")
-
-          // TODO: call getLexemeUnit
-          getLexemeUnit()
-
-          // TODO: if token is NOT EOF
-          if (lexemeUnit.getToken() != Token.EOF) {
-            // TODO: if token is a Int_literal, add result of "parseLiteral" as new branch and reset lexemeUnit
-            if (lexemeUnit.getToken() == Token.INT_LITERAL) {
-              tree.add(parse_intLiteral())
-              lexemeUnit = null // always set lexemeUnit to null after consuming it
-            }
-            // TODO: if token is a Int_boolean, add result of "parseLiteral" as new branch and reset lexemeUnit
-            else if (lexemeUnit.getToken() == Token.TRUE || lexemeUnit.getToken() == Token.FALSE) {
-              tree.add(parse_bool_literal())
-              lexemeUnit = null // always set lexemeUnit to null after consuming it
-            }
-
-            // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-            else
-              throw new Exception("Syntax Analyzer Error: \"(int) literal\" or \"(bool) literal\" expected!")
-          }
-          // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
-          else
-            throw new Exception("Syntax Analyzer Error: \"(int) literal\" or \"(bool) literal\" expected!")
-
-          // TODO: return the tree
-          tree
-        }
+    // TODO: return the tree
+    tree
+  }
 
 
-        // int_literal = digit { digit }
-        // TODO: return a new tree with the label "literal" followed by the actual lexeme
-        private def parse_intLiteral() = new Tree("int_literal: '" + lexemeUnit.getLexeme() + "'")
+  // literal = int_literal | bool_literal
+  private def parseLiteral(): Tree = {
+    // TODO: create a tree with label "literal"
+    val tree = new Tree("literal")
+
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
+
+    // TODO: if token is NOT EOF
+    if (lexemeUnit.getToken() != Token.EOF) {
+      // TODO: if token is a Int_literal, add result of "parseLiteral" as new branch and reset lexemeUnit
+      if (lexemeUnit.getToken() == Token.INT_LITERAL) {
+        tree.add(parse_intLiteral())
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
+      }
+      // TODO: if token is a Int_boolean, add result of "parseLiteral" as new branch and reset lexemeUnit
+      else if (lexemeUnit.getToken() == Token.TRUE || lexemeUnit.getToken() == Token.FALSE) {
+        tree.add(parse_bool_literal())
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
+      }
+
+      // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
+      else
+        throw new Exception("Syntax Analyzer Error: \"(int) literal\" or \"(bool) literal\" expected!")
+    }
+    // TODO: otherwise, throw an exception saying that "identifier, literal or opening parenthesis" was expected
+    else
+      throw new Exception("Syntax Analyzer Error: \"(int) literal\" or \"(bool) literal\" expected!")
+
+    // TODO: return the tree
+    tree
+  }
 
 
-        // bool_literal = ´true´ | ´false´
-        private def parse_bool_literal(): Tree = {
-          // TODO: create a tree with label "expression'"
-          val tree = new Tree("bool_literal")
+  // int_literal = digit { digit }
+  // TODO: return a new tree with the label "literal" followed by the actual lexeme
+  private def parse_intLiteral() = new Tree("int_literal: '" + lexemeUnit.getLexeme() + "'")
 
-          // TODO: call getLexemeUnit
-          getLexemeUnit()
 
-          // TODO: if token is NOT EOF
-          if (lexemeUnit.getToken() != Token.EOF) {
-            // TODO: if token is "TRUE" or "FALSE", add token as new branch and reset lexemeUnit;
-            //  then add result of "parseTerm" and "parseExpressionPrime" as new branches
-            if (lexemeUnit.getToken() == Token.TRUE || lexemeUnit.getToken() == Token.FALSE) {
-              tree.add(new Tree(lexemeUnit.getLexeme()))
-              lexemeUnit = null // always set lexemeUnit to null after consuming it
+  // bool_literal = ´true´ | ´false´
+  private def parse_bool_literal(): Tree = {
+    // TODO: create a tree with label "expression'"
+    val tree = new Tree("bool_literal")
 
-            }
-            // else means "epsilon" production
-          }
+    // TODO: call getLexemeUnit
+    getLexemeUnit()
 
-          // TODO: return the tree
-          tree
-        }
-        // bool_expr = bool_literal | arithm_expr ( ´>´ | ´>=´ | ´=´ | ´<=´ | ´<´ ) arithm_exp
-        private def parseBool_Expr() = {
-          // create a tree with label "program"
-          val tree = new Tree("bool_expr")
-
-          // return the tree
-          tree
-        }
-
+    // TODO: if token is NOT EOF
+    if (lexemeUnit.getToken() != Token.EOF) {
+      // TODO: if token is "TRUE" or "FALSE", add token as new branch and reset lexemeUnit;
+      //  then add result of "parseTerm" and "parseExpressionPrime" as new branches
+      if (lexemeUnit.getToken() == Token.TRUE || lexemeUnit.getToken() == Token.FALSE) {
+        tree.add(new Tree(lexemeUnit.getLexeme()))
+        lexemeUnit = null // always set lexemeUnit to null after consuming it
 
       }
+      // else means "epsilon" production
+    }
+
+    // TODO: return the tree
+    tree
+  }
+  // bool_expr = bool_literal | arithm_expr ( ´>´ | ´>=´ | ´=´ | ´<=´ | ´<´ ) arithm_exp
+  private def parseBool_Expr() = {
+    // create a tree with label "program"
+    val tree = new Tree("bool_expr")
+
+    // return the tree
+    tree
+  }
+
+
+}
 
 object SyntaxAnalyzer {
   def main(args: Array[String]): Unit = {
@@ -604,4 +592,3 @@ object SyntaxAnalyzer {
     print(parseTree)
   }
 }
-
