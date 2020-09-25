@@ -35,13 +35,13 @@ class SyntaxAnalyzer(private var source: String) {
       getLexemeUnit()
       tree.add(parseIdentifier())
       tree.add(parseBody)
-      //      if (lexemeUnit.getToken() == Token.PERIOD) {
-      //        tree.add(new Tree(lexemeUnit.getLexeme()))
-      //        lexemeUnit = null
-      //        getLexemeUnit()
-      //      }
-      //      else
-      //        throw new Exception("Syntax Analyzer Error: period expected!")
+        if (lexemeUnit.getToken() == Token.PERIOD) {
+              tree.add(new Tree(lexemeUnit.getLexeme()))
+              lexemeUnit = null
+              getLexemeUnit()
+            }
+            else
+              throw new Exception("Syntax Analyzer Error: period expected!")
     }
     else
       throw new Exception("Syntax Analyzer Error: program expected!")
@@ -197,8 +197,8 @@ class SyntaxAnalyzer(private var source: String) {
       tree.add(parseWhile_Stmt())
     else if (lexemeUnit.getToken() == Token.BEGIN)
       tree.add(parseBlock())
-    lexemeUnit = null
-    getLexemeUnit()
+//    lexemeUnit = null
+//    getLexemeUnit()
 
     //        else if (lexemeUnit.getToken() != Token.PIPE &&
     //          lexemeUnit.getToken() != Token.NEW_LINE &&
@@ -243,6 +243,8 @@ class SyntaxAnalyzer(private var source: String) {
       lexemeUnit = null
       getLexemeUnit()
       tree.add(parseIdentifier())
+      lexemeUnit = null
+      getLexemeUnit()
     }
     else
       throw new Exception("Syntax Analyzer Error: program expected!")
@@ -262,8 +264,11 @@ class SyntaxAnalyzer(private var source: String) {
       tree.add(new Tree(lexemeUnit.getLexeme()))
       lexemeUnit = null
       getLexemeUnit()
-      if (lexemeUnit.getToken() == Token.TRUE || lexemeUnit.getToken() == Token.FALSE){
+      if (lexemeUnit.getToken() == Token.IDENTIFIER||lexemeUnit.getToken() == Token.TRUE || lexemeUnit.getToken() == Token.FALSE){
         tree.add(parseIdentifier())
+        lexemeUnit = null
+        getLexemeUnit()
+
       }
 
     }
@@ -346,7 +351,7 @@ class SyntaxAnalyzer(private var source: String) {
       // TODO: if token is an identifier, add result of "parseIdentifier" as new branch and reset lexemeUnit
       if (lexemeUnit.getToken() == Token.IDENTIFIER) {
         tree.add(parse_arithm_Expr())
-        lexemeUnit = null // always set lexemeUnit to null after consuming it
+//        lexemeUnit = null // always set lexemeUnit to null after consuming it
       }
       // TODO: if token is a bool_expre, add result of "parseLiteral" as new branch and reset lexemeUnit
       else if (lexemeUnit.getToken() == Token.TRUE ||lexemeUnit.getToken() == Token.FALSE) {
@@ -377,7 +382,7 @@ class SyntaxAnalyzer(private var source: String) {
     if (lexemeUnit.getToken() != Token.EOF) {
       tree.add(parseTerm())
       tree.add(parse_arithm_expr_Prime())
-      lexemeUnit = null
+//      lexemeUnit = null
     }
     // TODO: otherwise, throw an exception saying that "factor" was expected
     else
