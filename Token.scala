@@ -11,17 +11,11 @@ object Token extends Enumeration {
   val IDENTIFIER      = Value
   val PROGRAM         = Value
   val VAR             = Value
-
-
   val BOOLEAN         = Value
   val TRUE            = Value
   val FALSE           = Value
   val INTEGER         = Value
-
-
   val END             = Value
-
-
   val OPERATOR        = Value
   val ADD_OP          = Value
   val SUB_OP          = Value
@@ -30,23 +24,17 @@ object Token extends Enumeration {
   val GRE_OP          = Value
   val LES_OP          = Value
   val EQU             = Value
-
-
   val SEMI_COL        = Value
   val COL             = Value
   val PERIOD          = Value
-
   val INT_LITERAL     = Value
-
+  val IF              = Value
   val ELSE            = Value
   val THEN            = Value
-
+  val WHILE           = Value
   val DO              = Value
-
-  val IF              = Value
   val READ            = Value
   val WRITE           = Value
-  val WHILE           = Value
   val ASSIGN_STMT     = Value
   val BEGIN           = Value
   val BLANK           = Value
