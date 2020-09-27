@@ -6,7 +6,7 @@ import scala.io.Source
  * CS3210 - Principles of Programming Languages - Fall 2020
  * Instructor: Thyago Mota
  * Description: Prg01 - Lexical Analyzer
- * Student(s) Name(s):
+ * Student(s) Name(s): Calvin Nguyen and Osman
  */
 
 class LexicalAnalyzer(private var source: String) extends Iterable[LexemeUnit] {
@@ -111,19 +111,7 @@ class LexicalAnalyzer(private var source: String) extends Iterable[LexemeUnit] {
               return new LexemeUnit(lexeme, Token.INT_LITERAL)
             }
             // TODO: recognize a operator
-//            if (charClass == CharClass.OPERATOR) {
-//              input = input.substring(1)
-//              lexeme += c
-//              c match {
-//                case '+' => return new LexemeUnit(lexeme, Token.ADD_OP)
-//                case '-' => return new LexemeUnit(lexeme, Token.SUB_OP)
-//                case '*' => return new LexemeUnit(lexeme, Token.MUL_OP)
-//                case '/' => return new LexemeUnit(lexeme, Token.DIV_OP)
-//                case '<' => return new LexemeUnit(lexeme, Token.GRE_OP)
-//                case '>' => return new LexemeUnit(lexeme, Token.LES_OP)
-//                case '=' => return new LexemeUnit(lexeme, Token.EQU)
-//              }
-//            }
+
             if (charClass == CharClass.OPERATOR) {
               input = input.substring(1)
               lexeme += c
@@ -171,18 +159,7 @@ class LexicalAnalyzer(private var source: String) extends Iterable[LexemeUnit] {
               else
                 return new LexemeUnit(lexeme, Token.ASSIGN_STMT)
             }
-
-            // TODO: recognize delimiters
-            if (charClass == CharClass.DELIMITER) {
-              input = input.substring(1)
-              lexeme += c
-              c match {
-                case '(' => return new LexemeUnit(lexeme, Token.OPEN_PAR)
-                case ')' => return new LexemeUnit(lexeme, Token.CLOSE_PAR)
-              }
-            }
-            // throw an exception if an unrecognizable symbol is found
-            throw new Exception("Lexical Analyzer Error: unrecognizable symbol found!")
+               throw new Exception("Lexical Analyzer Error: unrecognizable symbol found!")
           }
         }
       } // end next
@@ -223,6 +200,7 @@ object LexicalAnalyzer {
     "then"     -> Token.THEN,
     "while"    -> Token.WHILE,
     "do"       -> Token.DO,
+    "\n"       -> Token.BLANK,
 
 
   )

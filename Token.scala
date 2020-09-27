@@ -37,14 +37,6 @@ object Token extends Enumeration {
   val PERIOD          = Value
 
   val INT_LITERAL     = Value
-  val DIGIT           = Value
-  val OPEN_BRACE      = Value
-  val CLOSE_BRACE     = Value
-  val OPEN_PAR        = Value
-  val CLOSE_PAR       = Value
-  val META_IDENT      = Value
-  val TERMINAL_STRING = Value
-
 
   val ELSE            = Value
   val THEN            = Value
@@ -57,4 +49,5 @@ object Token extends Enumeration {
   val WHILE           = Value
   val ASSIGN_STMT     = Value
   val BEGIN           = Value
+  val BLANK           = Value
 }
